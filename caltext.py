@@ -26,9 +26,9 @@ def caltext(start, stop):
     # Make sense of the dates
     mkdate = lambda x: datetime.datetime( int(str(x)[:4]), int(str(x)[4:]), 1 )
     start = mkdate(start)
-    begin = datetime.datetime(start.year,start.month,1)
     stop = mkdate(stop)
     stop = stop + relativedelta(months=+1)
+    begin = datetime.datetime(start.year,start.month,1)
     end = datetime.datetime(stop.year, stop.month, 1)
     
     # Figure out the days
@@ -49,23 +49,18 @@ def caltext(start, stop):
     
     # Generate the plaintext
     text = '        Su Mo Tu We Th Fr Sa'
+    dmap = dict(Sun=0, Mon=3, Tue=6, Wed=9, Thu=12,
+                Fri=15, Sat=18,)
     for w in weeks:
-        monthstart=False
         for d in w:
             if d.day == 1:
-                monthstart = True
                 text += '\n'
-                spaces = 5 if monthstart else 8
-                dmap = dict(Sun=0, Mon=3, Tue=6, Wed=9, Thu=12,
-                            Fri=15, Sat=18,)
-                text += d.strftime('%b') if monthstart else ''
-                text += (spaces + dmap[d.strftime('%a')]) * ' '
-                text += str(d.day).rjust(2, ' ') 
-                text += '    \n' if d.strftime('%a') == 'Sat' else ' '
+                text += d.strftime('%b')
+                text += (5 + dmap[d.strftime('%a')]) * ' '
             else:
                 text += 8 * ' ' if w[0].day == d.day else ''
-                text += str(d.day).rjust(2, ' ')
-                text += '    \n' if d.strftime('%a') == 'Sat' else ' '
+            text += str(d.day).rjust(2, ' ')
+            text += '    \n' if d.strftime('%a') == 'Sat' else ' '
     return text
 
 
